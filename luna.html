@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Luna</title>
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  html, body { margin: 0; padding: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+/* self-hosted Fontdiner Swanky (WOFF2, base64) — avoids relying on an
+   external Google Fonts request so the title renders the same everywhere */
+const FONTDINER_SWANKY_WOFF2 = "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";
+
+
+/* ---------- React hooks + globals (loaded via CDN <script> tags) ---------- */
+const { useState, useEffect, useMemo, useCallback, useRef } = React;
+
+/* ---------- Supabase ---------- */
+const SUPABASE_URL = "https://spiadkhuabhitcgcndvr.supabase.co";
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwaWFka2h1YWJoaXRjZ2NuZHZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MzIxNjgsImV4cCI6MjEwNjQwODE2OH0.XGt8T8RESZI4J9xjNOblW0MfIRorrD_0lro4R0aDvBc";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ---------- small inline icons (replaces the lucide-react import) ---------- */
+function ChevronLeft({ size = 20, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  );
+}
+function ChevronRight({ size = 20, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  );
+}
+function Info({ size = 20, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+    </svg>
+  );
+}
+function X({ size = 20, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+/* ---------- date helpers (all operate on local-midnight Date objects) ---------- */
+const pad = (n) => (n < 10 ? "0" + n : "" + n);
+const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseISO = (s) => {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+const addDays = (d, n) => {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
+};
+const daysBetween = (a, b) => Math.round((b.getTime() - a.getTime()) / 86400000);
+const today = () => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+const fmtShort = (d) => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+const fmtLong = (d) => d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+const MONTH_LABEL = (d) => d.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+
+/* ---------- vocab ---------- */
+const FLOW_LEVELS = [
+  { id: "spotting", label: "Spotting" },
+  { id: "light", label: "Light" },
+  { id: "medium", label: "Medium" },
+  { id: "heavy", label: "Heavy" },
+];
+const FLUID_TYPES = [
+  { id: "dry", label: "Dry" },
+  { id: "sticky", label: "Sticky" },
+  { id: "creamy", label: "Creamy" },
+  { id: "eggwhite", label: "Egg white" },
+  { id: "watery", label: "Watery" },
+];
+
+const COLORS = {
+  bg: "#FAF6F2",
+  surface: "#FFFFFF",
+  surfaceMuted: "#F3ECE7",
+  text: "#2B2024",
+  textMuted: "#8A7A78",
+  border: "#E4D9D2",
+  wine: "#8C3A4B",
+  wineSoft: "#F1DEE1",
+  moss: "#5C7A5E",
+  mossSoft: "#E4EBE1",
+  amber: "#B9812E",
+  amberSoft: "#F3E4C8",
+  periodStrong: "#C0453F",
+  periodPale: "rgba(192,69,63,0.16)",
+  fertileStrong: "#4F7A52",
+  fertilePale: "rgba(79,122,82,0.30)",
+  fertileWindow: "#DCEAD8",
+  fertileWindowPale: "rgba(92,122,94,0.12)",
+};
+
+/* ---------- small fluid icons — shape-coded, not just color-coded ---------- */
+function FluidIcon({ type, size = 18, color }) {
+  const c = color || COLORS.text;
+  const common = { width: size, height: size, viewBox: "0 0 24 24" };
+  switch (type) {
+    case "dry":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8" fill="none" stroke={c} strokeWidth="1.4" strokeDasharray="2.5 2.5" opacity="0.7" />
+        </svg>
+      );
+    case "sticky":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8" fill="none" stroke={c} strokeWidth="1.4" opacity="0.6" />
+          <circle cx="9" cy="10" r="1.3" fill={c} />
+          <circle cx="14" cy="9" r="1.1" fill={c} />
+          <circle cx="12" cy="14" r="1.3" fill={c} />
+        </svg>
+      );
+    case "creamy":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8" fill={c} opacity="0.85" />
+        </svg>
+      );
+    case "eggwhite":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8" fill={c} opacity="0.22" />
+          <path d="M7 14 C9 8, 15 8, 17 14" stroke={c} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+          <ellipse cx="10.5" cy="10.5" rx="1.6" ry="0.9" fill={c} opacity="0.9" transform="rotate(-30 10.5 10.5)" />
+        </svg>
+      );
+    case "watery":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="8" fill={c} opacity="0.15" />
+          <path d="M6 11 Q9 9 12 11 T18 11" stroke={c} strokeWidth="1.3" fill="none" strokeLinecap="round" />
+          <path d="M6 15 Q9 13 12 15 T18 15" stroke={c} strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
+function FlowDot({ level, size = 18, color }) {
+  const c = color || COLORS.wine;
+  const scale = { spotting: 0.32, light: 0.5, medium: 0.7, heavy: 1 }[level] ?? 0.5;
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r={9 * scale} fill={c} />
+      {level === "heavy" && <circle cx="12" cy="12" r="10.5" fill="none" stroke={c} strokeWidth="1" opacity="0.5" />}
+    </svg>
+  );
+}
+
+/* ---------- cycle math ---------- */
+function computeCycleData(entries) {
+  const flowDates = Object.keys(entries)
+    .filter((k) => entries[k].flow)
+    .sort();
+  const periodStarts = [];
+  for (const iso of flowDates) {
+    const d = parseISO(iso);
+    const prevIso = toISO(addDays(d, -1));
+    if (!entries[prevIso] || !entries[prevIso].flow) periodStarts.push(iso);
+  }
+  const cycleLengths = [];
+  for (let i = 1; i < periodStarts.length; i++) {
+    cycleLengths.push(daysBetween(parseISO(periodStarts[i - 1]), parseISO(periodStarts[i])));
+  }
+  const recentLengths = cycleLengths.slice(-6);
+  const avgCycleLength = recentLengths.length
+    ? Math.round(recentLengths.reduce((a, b) => a + b, 0) / recentLengths.length)
+    : 28;
+
+  const lastStartIso = periodStarts[periodStarts.length - 1] || null;
+  const lastStart = lastStartIso ? parseISO(lastStartIso) : null;
+
+  // average how many days the actual bleeding streak lasts, from logged flow days
+  const periodLengths = periodStarts.map((iso) => {
+    let len = 0;
+    let cursor = parseISO(iso);
+    while (entries[toISO(cursor)]?.flow) {
+      len++;
+      cursor = addDays(cursor, 1);
+    }
+    return len;
+  });
+  const recentPeriodLengths = periodLengths.filter((n) => n > 0).slice(-6);
+  const avgPeriodLength = recentPeriodLengths.length
+    ? Math.round(recentPeriodLengths.reduce((a, b) => a + b, 0) / recentPeriodLengths.length)
+    : 5;
+
+  let predictedNextPeriod = null,
+    predictedPeriodEnd = null,
+    predictedOvulation = null,
+    fertileStart = null,
+    fertileEnd = null,
+    currentCycleDay = null,
+    fertileStartDay = null,
+    fertileEndDay = null;
+
+  if (lastStart) {
+    predictedNextPeriod = addDays(lastStart, avgCycleLength);
+    predictedPeriodEnd = addDays(predictedNextPeriod, avgPeriodLength - 1);
+    predictedOvulation = addDays(predictedNextPeriod, -14);
+    fertileStart = addDays(predictedOvulation, -5);
+    fertileEnd = addDays(predictedOvulation, 1);
+    currentCycleDay = daysBetween(lastStart, today()) + 1;
+    fertileStartDay = daysBetween(lastStart, fertileStart) + 1;
+    fertileEndDay = daysBetween(lastStart, fertileEnd) + 1;
+  }
+
+  // fertility signs observed in the current (ongoing) cycle
+  let peakDayIso = null;
+  if (lastStart) {
+    const cursor = new Date(lastStart);
+    while (cursor <= today()) {
+      const iso = toISO(cursor);
+      const fluid = entries[iso]?.fluid;
+      if (fluid === "eggwhite" || fluid === "watery") peakDayIso = iso;
+      cursor.setDate(cursor.getDate() + 1);
+    }
+  }
+
+  // is today still within the initial bleed streak?
+  let inPeriodNow = false;
+  if (lastStart) {
+    const cursor = new Date(lastStart);
+    while (cursor <= today()) {
+      const iso = toISO(cursor);
+      if (!entries[iso]?.flow) break;
+      if (toISO(cursor) === toISO(today())) inPeriodNow = true;
+      cursor.setDate(cursor.getDate() + 1);
+    }
+  }
+
+  let phase = "No data yet";
+  if (lastStart) {
+    if (inPeriodNow) phase = "Period";
+    else if (currentCycleDay < fertileStartDay) phase = "Follicular phase";
+    else if (currentCycleDay <= fertileEndDay) phase = "Fertile window";
+    else phase = "Luteal phase";
+  }
+
+  // the single day treated as "most fertile" for the current cycle: an observed
+  // egg-white/watery day takes priority over the calendar-based prediction
+  const mostFertileIso = peakDayIso || (predictedOvulation ? toISO(predictedOvulation) : null);
+
+  return {
+    periodStarts,
+    cycleLengths,
+    avgCycleLength,
+    avgPeriodLength,
+    lastStart,
+    predictedNextPeriod,
+    predictedPeriodEnd,
+    predictedOvulation,
+    fertileStart,
+    fertileEnd,
+    fertileStartDay,
+    fertileEndDay,
+    currentCycleDay,
+    peakDayIso,
+    mostFertileIso,
+    phase,
+    hasEnoughForPrediction: cycleLengths.length >= 1,
+  };
+}
+
+/* given a date, find which logged cycle it falls in and which day number that is */
+function cycleDayLabel(iso, periodStarts) {
+  const d = parseISO(iso);
+  let startIso = null;
+  for (let i = periodStarts.length - 1; i >= 0; i--) {
+    if (parseISO(periodStarts[i]) <= d) {
+      startIso = periodStarts[i];
+      break;
+    }
+  }
+  if (!startIso) return null;
+  const dayNum = daysBetween(parseISO(startIso), d) + 1;
+  const isCurrent = startIso === periodStarts[periodStarts.length - 1];
+  return { dayNum, isCurrent };
+}
+
+/* ---------- day editor ---------- */
+function DayEditor({ iso, entry, onChange, onClose, cycleData }) {
+  const flow = entry?.flow || null;
+  const fluid = entry?.fluid || null;
+  const dayInfo = cycleDayLabel(iso, cycleData.periodStarts);
+  return (
+    <div
+      style={{
+        background: COLORS.surface,
+        border: `1px solid ${COLORS.border}`,
+        borderRadius: 14,
+        padding: "18px 20px",
+        marginTop: 12,
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: dayInfo ? 2 : 14 }}>
+        <div style={{ fontFamily: "var(--serif)", fontSize: 18, color: COLORS.text }}>{fmtLong(parseISO(iso))}</div>
+        <button onClick={onClose} aria-label="Close" style={iconBtnStyle}>
+          <X size={17} color={COLORS.textMuted} />
+        </button>
+      </div>
+
+      {dayInfo && (
+        <div style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 14 }}>
+          Day {dayInfo.dayNum} of {dayInfo.isCurrent ? "her current cycle" : "that cycle"}
+        </div>
+      )}
+
+      <div style={{ marginBottom: 16 }}>
+        <div style={labelStyle}>Flow</div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button
+            onClick={() => onChange(iso, { ...entry, flow: null })}
+            style={pillStyle(flow === null)}
+          >
+            None
+          </button>
+          {FLOW_LEVELS.map((f) => (
+            <button key={f.id} onClick={() => onChange(iso, { ...entry, flow: f.id })} style={pillStyle(flow === f.id)}>
+              <FlowDot level={f.id} size={14} color={flow === f.id ? "#fff" : COLORS.wine} />
+              <span style={{ marginLeft: 6 }}>{f.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div style={labelStyle}>Cervical fluid</div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button
+            onClick={() => onChange(iso, { ...entry, fluid: null })}
+            style={pillStyle(fluid === null)}
+          >
+            Not noted
+          </button>
+          {FLUID_TYPES.map((f) => (
+            <button key={f.id} onClick={() => onChange(iso, { ...entry, fluid: f.id })} style={pillStyle(fluid === f.id)}>
+              <FluidIcon type={f.id} size={15} color={fluid === f.id ? "#fff" : COLORS.moss} />
+              <span style={{ marginLeft: 6 }}>{f.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const labelStyle = { fontSize: 13, color: COLORS.textMuted, marginBottom: 8 };
+const iconBtnStyle = {
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 6,
+  borderRadius: 8,
+  display: "flex",
+};
+const pillStyle = (active) => ({
+  display: "flex",
+  alignItems: "center",
+  padding: "7px 12px",
+  borderRadius: 999,
+  border: `1px solid ${active ? "transparent" : COLORS.border}`,
+  background: active ? COLORS.wine : COLORS.surfaceMuted,
+  color: active ? "#fff" : COLORS.text,
+  fontSize: 13.5,
+  cursor: "pointer",
+  fontFamily: "var(--sans)",
+});
+const demoLinkStyle = {
+  background: "none",
+  border: "none",
+  padding: 0,
+  fontSize: 12,
+  color: COLORS.textMuted,
+  textDecoration: "underline",
+  cursor: "pointer",
+};
+const selectStyle = {
+  padding: "8px 10px",
+  borderRadius: 8,
+  border: `1px solid ${COLORS.border}`,
+  background: COLORS.surfaceMuted,
+  color: COLORS.text,
+  fontSize: 13.5,
+  fontFamily: "var(--sans)",
+  width: "100%",
+};
+
+/* ---------- calendar view ---------- */
+function CalendarView({ entries, onChange, cycleData }) {
+  const [monthCursor, setMonthCursor] = useState(() => {
+    const d = today();
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  });
+  const [selected, setSelected] = useState(null);
+
+  const firstOfMonth = monthCursor;
+  const startWeekday = (firstOfMonth.getDay() + 6) % 7; // Monday = 0
+  const daysInMonth = new Date(firstOfMonth.getFullYear(), firstOfMonth.getMonth() + 1, 0).getDate();
+
+  const cells = [];
+  for (let i = 0; i < startWeekday; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(firstOfMonth.getFullYear(), firstOfMonth.getMonth(), d));
+
+  const { fertileStart, fertileEnd, predictedNextPeriod, predictedPeriodEnd, mostFertileIso } = cycleData;
+  const isToday = (d) => toISO(d) === toISO(today());
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <button
+          style={iconBtnStyle}
+          onClick={() => setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() - 1, 1))}
+          aria-label="Previous month"
+        >
+          <ChevronLeft size={19} color={COLORS.text} />
+        </button>
+        <div style={{ fontFamily: "var(--serif)", fontSize: 19, color: COLORS.text }}>{MONTH_LABEL(monthCursor)}</div>
+        <button
+          style={iconBtnStyle}
+          onClick={() => setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1))}
+          aria-label="Next month"
+        >
+          <ChevronRight size={19} color={COLORS.text} />
+        </button>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, marginBottom: 4 }}>
+        {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+          <div key={i} style={{ textAlign: "center", fontSize: 12, color: COLORS.textMuted, padding: "4px 0" }}>
+            {d}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4 }}>
+        {cells.map((d, i) => {
+          if (!d) return <div key={i} />;
+          const iso = toISO(d);
+          const entry = entries[iso];
+          const pastOrToday = d <= today();
+          const loggedPeriod = !!entry?.flow;
+          const predictedPeriod =
+            !loggedPeriod && predictedNextPeriod && predictedPeriodEnd && d >= predictedNextPeriod && d <= predictedPeriodEnd;
+          const mostFertile = mostFertileIso && iso === mostFertileIso;
+          const inWindow = fertileStart && fertileEnd && d >= fertileStart && d <= fertileEnd;
+
+          let bg = "transparent";
+          let textColor = COLORS.text;
+          if (loggedPeriod) {
+            bg = COLORS.periodStrong;
+            textColor = "#fff";
+          } else if (predictedPeriod) {
+            bg = COLORS.periodPale;
+          } else if (mostFertile) {
+            bg = pastOrToday ? COLORS.fertileStrong : COLORS.fertilePale;
+            textColor = pastOrToday ? "#fff" : COLORS.text;
+          } else if (inWindow) {
+            bg = pastOrToday ? COLORS.fertileWindow : COLORS.fertileWindowPale;
+          }
+
+          return (
+            <button
+              key={i}
+              onClick={() => setSelected(iso)}
+              style={{
+                aspectRatio: "1",
+                borderRadius: 10,
+                border: isToday(d)
+                  ? `1.5px solid ${COLORS.text}`
+                  : selected === iso
+                  ? `1.5px solid ${COLORS.textMuted}`
+                  : "1px solid transparent",
+                background: bg,
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 2,
+                position: "relative",
+                padding: 2,
+              }}
+            >
+              <span style={{ fontSize: 13, color: textColor, fontFamily: "var(--sans)" }}>{d.getDate()}</span>
+              {entry?.fluid && (
+                <div style={{ height: 12, display: "flex", alignItems: "center" }}>
+                  <FluidIcon type={entry.fluid} size={11} color={textColor === "#fff" ? "#fff" : COLORS.moss} />
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {selected && (
+        <DayEditor
+          iso={selected}
+          entry={entries[selected]}
+          onChange={onChange}
+          onClose={() => setSelected(null)}
+          cycleData={cycleData}
+        />
+      )}
+
+      <Legend />
+    </div>
+  );
+}
+
+function Legend() {
+  const swatch = (bg, border) => ({
+    width: 12,
+    height: 12,
+    borderRadius: 4,
+    background: bg,
+    border: border ? `1px solid ${border}` : "none",
+  });
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px 18px", marginTop: 18, fontSize: 12.5, color: COLORS.textMuted }}>
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={swatch(COLORS.periodStrong)} />
+        Period
+      </span>
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={swatch(COLORS.periodPale)} />
+        Predicted period
+      </span>
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={swatch(COLORS.fertileWindow)} />
+        Fertile window
+      </span>
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={swatch(COLORS.fertileWindowPale)} />
+        Predicted fertile window
+      </span>
+      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <span style={swatch(COLORS.fertileStrong)} />
+        Most fertile day
+      </span>
+    </div>
+  );
+}
+
+/* ---------- chart view ---------- */
+function ChartView({ entries, cycleData }) {
+  const { periodStarts, cycleLengths, avgCycleLength } = cycleData;
+  const rows = useMemo(() => {
+    const list = [];
+    const starts = periodStarts;
+    for (let i = 0; i < starts.length; i++) {
+      const start = parseISO(starts[i]);
+      const end = i < starts.length - 1 ? addDays(parseISO(starts[i + 1]), -1) : today();
+      const length = daysBetween(start, i < starts.length - 1 ? parseISO(starts[i + 1]) : today()) + (i < starts.length - 1 ? 0 : 1);
+      list.push({ start, end, length, ongoing: i === starts.length - 1 });
+    }
+    return list.reverse().slice(0, 6);
+  }, [periodStarts]);
+
+  const maxDay = Math.max(28, ...rows.map((r) => r.length), avgCycleLength);
+
+  if (rows.length === 0) {
+    return (
+      <div style={{ padding: "40px 10px", textAlign: "center", color: COLORS.textMuted }}>
+        Nothing charted yet. Log a period start date and this will fill in.
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{ overflowX: "auto", paddingBottom: 6 }}>
+        <div style={{ minWidth: maxDay * 15 + 90 }}>
+          {rows.map((row, ri) => (
+            <div key={ri} style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ width: 90, flexShrink: 0, fontSize: 12, color: COLORS.textMuted, fontFamily: "var(--sans)" }}>
+                {fmtShort(row.start)}
+                {row.ongoing ? " – now" : ` (${row.length}d)`}
+              </div>
+              <div style={{ display: "flex", gap: 2 }}>
+                {Array.from({ length: maxDay }).map((_, di) => {
+                  const d = addDays(row.start, di);
+                  if (d > row.end) return <div key={di} style={{ width: 13, height: 22 }} />;
+                  const iso = toISO(d);
+                  const entry = entries[iso];
+                  const isPeakOfThisRow = (() => {
+                    let peak = null;
+                    let cursor = row.start;
+                    while (cursor <= row.end) {
+                      const f = entries[toISO(cursor)]?.fluid;
+                      if (f === "eggwhite" || f === "watery") peak = toISO(cursor);
+                      cursor = addDays(cursor, 1);
+                    }
+                    return peak === iso;
+                  })();
+                  return (
+                    <div
+                      key={di}
+                      title={fmtShort(d)}
+                      style={{
+                        width: 13,
+                        height: 22,
+                        borderRadius: 4,
+                        background: entry?.fluid
+                          ? entry.fluid === "eggwhite" || entry.fluid === "watery"
+                            ? COLORS.mossSoft
+                            : COLORS.surfaceMuted
+                          : "transparent",
+                        border: isPeakOfThisRow ? `1.3px solid ${COLORS.amber}` : "1px solid transparent",
+                        display: "flex",
+                        alignItems: "flex-end",
+                        justifyContent: "center",
+                        paddingBottom: 2,
+                      }}
+                    >
+                      {entry?.flow && <FlowDot level={entry.flow} size={8} />}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ marginTop: 8, fontSize: 12.5, color: COLORS.textMuted }}>
+        Each square is a day of the cycle. Wine dots mark flow, pale-green squares mark eggwhite/watery mucus, the amber
+        outline marks the most fertile-type mucus seen that cycle.
+      </div>
+
+      {cycleLengths.length > 0 && (
+        <div style={{ marginTop: 30 }}>
+          <div style={{ fontFamily: "var(--serif)", fontSize: 16, color: COLORS.text, marginBottom: 12 }}>Cycle length over time</div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 100 }}>
+            {cycleLengths.slice(-8).map((len, i) => {
+              const h = Math.max(8, (len / (maxDay + 4)) * 100);
+              return (
+                <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                  <div style={{ fontSize: 11, color: COLORS.textMuted }}>{len}</div>
+                  <div style={{ width: 20, height: `${h}px`, background: COLORS.wineSoft, borderRadius: 4, border: `1px solid ${COLORS.wine}` }} />
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 8 }}>
+            Average of the last {Math.min(6, cycleLengths.length)} cycle{cycleLengths.length > 1 ? "s" : ""}: {avgCycleLength} days
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- history view ---------- */
+function HistoryView({ cycleData }) {
+  const { periodStarts } = cycleData;
+
+  if (periodStarts.length === 0) {
+    return (
+      <div style={{ padding: "40px 10px", textAlign: "center", color: COLORS.textMuted }}>
+        No cycles logged yet. Once you've marked a couple of period start dates, they'll show up here.
+      </div>
+    );
+  }
+
+  const rows = periodStarts
+    .map((startIso, i) => {
+      const start = parseISO(startIso);
+      const isLast = i === periodStarts.length - 1;
+      if (isLast) {
+        const length = daysBetween(start, today()) + 1;
+        return { start, finish: null, length, ongoing: true };
+      }
+      const nextStart = parseISO(periodStarts[i + 1]);
+      const finish = addDays(nextStart, -1);
+      const length = daysBetween(start, nextStart);
+      return { start, finish, length, ongoing: false };
+    })
+    .reverse();
+
+  return (
+    <div>
+      <div style={{ display: "flex", fontSize: 12, color: COLORS.textMuted, padding: "0 4px 8px", borderBottom: `1px solid ${COLORS.border}` }}>
+        <div style={{ flex: "0 0 26px" }}>#</div>
+        <div style={{ flex: "1 1 40%" }}>Start</div>
+        <div style={{ flex: "1 1 40%" }}>Finish</div>
+        <div style={{ flex: "0 0 70px", textAlign: "right" }}>Length</div>
+      </div>
+      {rows.map((row, i) => (
+        <div
+          key={i}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "12px 4px",
+            borderBottom: `1px solid ${COLORS.border}`,
+            fontSize: 14,
+          }}
+        >
+          <div style={{ flex: "0 0 26px", color: COLORS.textMuted }}>{rows.length - i}</div>
+          <div style={{ flex: "1 1 40%", color: COLORS.text }}>{fmtShort(row.start)}</div>
+          <div style={{ flex: "1 1 40%", color: row.ongoing ? COLORS.textMuted : COLORS.text }}>
+            {row.ongoing ? "Ongoing" : fmtShort(row.finish)}
+          </div>
+          <div style={{ flex: "0 0 70px", textAlign: "right", color: COLORS.text }}>
+            {row.length} day{row.length === 1 ? "" : "s"}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ---------- summary card ---------- */
+function SummaryCard({ cycleData }) {
+  const { currentCycleDay, phase, predictedNextPeriod, fertileStart, fertileEnd, hasEnoughForPrediction, lastStart } = cycleData;
+  const [showInfo, setShowInfo] = useState(false);
+
+  if (!lastStart) {
+    return (
+      <div style={cardStyle}>
+        <div style={{ fontFamily: "var(--serif)", fontSize: 20, color: COLORS.text, marginBottom: 6 }}>Nothing logged yet</div>
+        <div style={{ color: COLORS.textMuted, fontSize: 14 }}>
+          Tap a day on the calendar below and mark it as the start of a period to begin.
+        </div>
+      </div>
+    );
+  }
+
+  const daysUntilNext = predictedNextPeriod ? daysBetween(today(), predictedNextPeriod) : null;
+
+  return (
+    <div style={cardStyle}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <div style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 2 }}>Day {currentCycleDay} of this cycle</div>
+          <div style={{ fontFamily: "var(--serif)", fontSize: 26, color: COLORS.text }}>{phase}</div>
+        </div>
+        <button onClick={() => setShowInfo((s) => !s)} style={iconBtnStyle} aria-label="About predictions">
+          <Info size={18} color={COLORS.textMuted} />
+        </button>
+      </div>
+
+      <div style={{ display: "flex", gap: 24, marginTop: 16, flexWrap: "wrap" }}>
+        <div>
+          <div style={{ fontSize: 12.5, color: COLORS.textMuted }}>Next period expected</div>
+          <div style={{ fontSize: 15, color: COLORS.text, marginTop: 2 }}>
+            {fmtShort(predictedNextPeriod)} {daysUntilNext >= 0 ? `· in ${daysUntilNext}d` : ""}
+          </div>
+        </div>
+        <div>
+          <div style={{ fontSize: 12.5, color: COLORS.textMuted }}>Fertile window</div>
+          <div style={{ fontSize: 15, color: COLORS.text, marginTop: 2 }}>
+            {fmtShort(fertileStart)} – {fmtShort(fertileEnd)}
+          </div>
+        </div>
+      </div>
+
+      {!hasEnoughForPrediction && (
+        <div style={{ fontSize: 12.5, color: COLORS.textMuted, marginTop: 12 }}>
+          Based on a typical 28-day cycle for now — this will sharpen after one full logged cycle.
+        </div>
+      )}
+
+      {showInfo && (
+        <div style={{ marginTop: 14, padding: 12, background: COLORS.surfaceMuted, borderRadius: 10, fontSize: 12.5, color: COLORS.textMuted, lineHeight: 1.5 }}>
+          These dates are estimates from your own logged data and typical cycle patterns — they're a guide, not a
+          clinical or contraceptive method. If you're actively trying to conceive or avoid pregnancy, it's worth
+          learning a fertility awareness method properly (e.g. from an instructor) rather than relying on this alone.
+        </div>
+      )}
+    </div>
+  );
+}
+
+const cardStyle = {
+  background: COLORS.surface,
+  border: `1px solid ${COLORS.border}`,
+  borderRadius: 16,
+  padding: "20px 22px",
+};
+
+/* ---------- TEMPORARY: demo data for previewing the app ----------
+   Safe to delete this whole block (and the two buttons that call it
+   in the App component below) once real tracking has started. */
+function buildDemoCycle(startDate, fillThroughOffset) {
+  const entries = {};
+  ["heavy", "heavy", "medium", "light", "spotting"].forEach((level, i) => {
+    entries[toISO(addDays(startDate, i))] = { flow: level };
+  });
+  const fluidByOffset = {
+    5: "dry", 6: "dry", 7: "dry", 8: "dry",
+    9: "sticky", 10: "sticky",
+    11: "creamy",
+    12: "eggwhite", 13: "eggwhite",
+    14: "watery",
+    15: "creamy", 16: "creamy",
+    17: "dry",
+  };
+  Object.entries(fluidByOffset).forEach(([offsetStr, fluid]) => {
+    const offset = Number(offsetStr);
+    if (offset > fillThroughOffset) return;
+    const iso = toISO(addDays(startDate, offset));
+    entries[iso] = { ...(entries[iso] || {}), fluid };
+  });
+  return entries;
+}
+function generateDemoEntries() {
+  const lastStart = addDays(today(), -15); // lands "today" mid-fertile-window for a representative demo
+  const start3 = addDays(lastStart, -30);
+  const start2 = addDays(start3, -29);
+  const start1 = addDays(start2, -27);
+  return {
+    ...buildDemoCycle(start1, 17),
+    ...buildDemoCycle(start2, 17),
+    ...buildDemoCycle(start3, 17),
+    ...buildDemoCycle(lastStart, 15), // only fill up to "today"
+  };
+}
+
+/* ---------- CSV import (Kindara export) ----------
+   Kindara's real export (confirmed against an actual file) uses one column
+   per fluid type (e.g. "fluid dry", "fluid eggwhite", each "-" or an
+   intensity) plus a "menstruation" column (-, light, medium, heavy) and a
+   separate "spotting" column. parseNativeKindaraRow reads that directly.
+   For any CSV that doesn't match this shape, the app falls back to
+   guessing a single date/flow/mucus column and asking the person to
+   confirm the mapping. */
+const KINDARA_FLUID_COLUMNS = ["fluid eggwhite", "fluid watery", "fluid creamy", "fluid sticky", "fluid dry"];
+const KINDARA_FLUID_MAP = {
+  "fluid dry": "dry",
+  "fluid sticky": "sticky",
+  "fluid creamy": "creamy",
+  "fluid eggwhite": "eggwhite",
+  "fluid watery": "watery",
+};
+function looksLikeNativeKindaraExport(headers) {
+  const set = new Set(headers.map((h) => h.toLowerCase()));
+  return set.has("date") && set.has("menstruation") && KINDARA_FLUID_COLUMNS.some((c) => set.has(c));
+}
+function parseNativeKindaraRow(row) {
+  let flow = null;
+  const menstruation = (row["menstruation"] || "").trim().toLowerCase();
+  if (menstruation === "light" || menstruation === "medium" || menstruation === "heavy") {
+    flow = menstruation;
+  } else if ((row["spotting"] || "").trim().toLowerCase() === "true") {
+    flow = "spotting";
+  }
+  // most-fertile-first: if more than one fluid column was marked that day, keep the most fertile
+  let fluid = null;
+  for (const col of KINDARA_FLUID_COLUMNS) {
+    if (row[col] && row[col].trim() !== "-" && row[col].trim() !== "") {
+      fluid = KINDARA_FLUID_MAP[col];
+      break;
+    }
+  }
+  return { flow, fluid };
+}
+
+function guessColumn(headers, keywords) {
+  const lower = headers.map((h) => h.toLowerCase());
+  for (const kw of keywords) {
+    const idx = lower.findIndex((h) => h.includes(kw));
+    if (idx !== -1) return headers[idx];
+  }
+  return "";
+}
+function parseFlexibleDate(raw) {
+  if (!raw) return null;
+  const trimmed = String(raw).trim();
+  if (!trimmed) return null;
+  let d = new Date(trimmed);
+  if (!isNaN(d.getTime())) {
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  const m = trimmed.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/);
+  if (m) {
+    let [, a, b, yr] = m;
+    if (yr.length === 2) yr = "20" + yr;
+    d = new Date(Number(yr), Number(a) - 1, Number(b));
+    if (!isNaN(d.getTime())) return d;
+  }
+  return null;
+}
+function parseFlowValue(raw) {
+  if (!raw) return null;
+  const v = String(raw).trim().toLowerCase();
+  if (!v || v === "0" || v === "none") return null;
+  if (v.includes("heavy") || v === "h") return "heavy";
+  if (v.includes("med") || v === "m") return "medium";
+  if (v.includes("light") || v === "l" || v === "lt") return "light";
+  if (v.includes("spot") || v === "s") return "spotting";
+  return null;
+}
+function parseFluidValue(raw) {
+  if (!raw) return null;
+  const v = String(raw).trim().toLowerCase();
+  if (!v || v === "0" || v === "none") return null;
+  if (v.includes("dry")) return "dry";
+  if (v.includes("sticky") || v.includes("tacky")) return "sticky";
+  if (v.includes("cream") || v.includes("lotion")) return "creamy";
+  if (v.includes("egg") || v === "ew") return "eggwhite";
+  if (v.includes("water")) return "watery";
+  return null;
+}
+
+/* ---------- app ---------- */
+function App() {
+  const [session, setSession] = useState(undefined); // undefined = checking, null = signed out
+  const [authMode, setAuthMode] = useState("login");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authError, setAuthError] = useState(null);
+  const [authLoading, setAuthLoading] = useState(false);
+
+  const [entries, setEntries] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [view, setView] = useState("calendar");
+  const [error, setError] = useState(null);
+  const [importPreview, setImportPreview] = useState(null);
+  const [importMessage, setImportMessage] = useState(null);
+  const fileInputRef = useRef(null);
+
+  // auth session — check once on load, then stay in sync with login/logout
+  useEffect(() => {
+    sb.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: listener } = sb.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  // load her entries from Supabase whenever she's signed in
+  useEffect(() => {
+    if (!session) {
+      setEntries({});
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    sb.from("cycle_entries")
+      .select("date,flow,fluid")
+      .eq("user_id", session.user.id)
+      .then(({ data, error }) => {
+        if (error) {
+          setError("Couldn't load your data — try refreshing.");
+          setLoading(false);
+          return;
+        }
+        const map = {};
+        (data || []).forEach((row) => {
+          const e = {};
+          if (row.flow) e.flow = row.flow;
+          if (row.fluid) e.fluid = row.fluid;
+          if (Object.keys(e).length) map[row.date] = e;
+        });
+        setEntries(map);
+        setLoading(false);
+      });
+  }, [session]);
+
+  // writes the difference between prev and next to Supabase: upserts changed/added
+  // days, deletes any day that existed in prev but is gone from next
+  const persist = useCallback(
+    async (next, prev) => {
+      if (!session) return;
+      try {
+        const userId = session.user.id;
+        const prevKeys = Object.keys(prev || {});
+        const nextKeys = new Set(Object.keys(next));
+        const toDelete = prevKeys.filter((k) => !nextKeys.has(k));
+        const toUpsert = Object.entries(next).map(([date, e]) => ({
+          user_id: userId,
+          date,
+          flow: e.flow || null,
+          fluid: e.fluid || null,
+          updated_at: new Date().toISOString(),
+        }));
+        if (toDelete.length) {
+          const { error: delErr } = await sb.from("cycle_entries").delete().eq("user_id", userId).in("date", toDelete);
+          if (delErr) throw delErr;
+        }
+        for (let i = 0; i < toUpsert.length; i += 500) {
+          const chunk = toUpsert.slice(i, i + 500);
+          const { error: upErr } = await sb.from("cycle_entries").upsert(chunk, { onConflict: "user_id,date" });
+          if (upErr) throw upErr;
+        }
+        setError(null);
+      } catch (e) {
+        setError("Couldn't save just now — your last change may not have stuck.");
+      }
+    },
+    [session]
+  );
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setAuthLoading(true);
+    setAuthError(null);
+    const { error } = await sb.auth.signInWithPassword({ email: authEmail, password: authPassword });
+    setAuthLoading(false);
+    if (error) setAuthError(error.message);
+  };
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setAuthLoading(true);
+    setAuthError(null);
+    const { error } = await sb.auth.signUp({ email: authEmail, password: authPassword });
+    setAuthLoading(false);
+    if (error) setAuthError(error.message);
+  };
+  const handleSignOut = () => sb.auth.signOut();
+
+  const handleChange = useCallback(
+    (iso, patch) => {
+      setEntries((prev) => {
+        const cleaned = { ...patch };
+        if (!cleaned.flow) delete cleaned.flow;
+        if (!cleaned.fluid) delete cleaned.fluid;
+        const next = { ...prev };
+        if (Object.keys(cleaned).length === 0) delete next[iso];
+        else next[iso] = cleaned;
+        persist(next, prev);
+        return next;
+      });
+    },
+    [persist]
+  );
+
+  const cycleData = useMemo(() => computeCycleData(entries), [entries]);
+
+  // TEMPORARY: demo controls — safe to remove along with the buttons below
+  const handleLoadDemo = () => {
+    const demo = generateDemoEntries();
+    persist(demo, entries);
+    setEntries(demo);
+  };
+  const handleClearAll = () => {
+    if (!window.confirm("Clear all logged days? This can't be undone.")) return;
+    persist({}, entries);
+    setEntries({});
+  };
+
+  const mergeImportedRows = (existing, rows, dateCol, getFlowFluid) => {
+    let imported = 0,
+      flowCount = 0,
+      fluidCount = 0,
+      skipped = 0;
+    const next = { ...existing };
+    rows.forEach((row) => {
+      const d = parseFlexibleDate(row[dateCol]);
+      if (!d) {
+        skipped++;
+        return;
+      }
+      const iso = toISO(d);
+      const { flow, fluid } = getFlowFluid(row);
+      const patch = { ...(next[iso] || {}) };
+      if (flow) {
+        patch.flow = flow;
+        flowCount++;
+      }
+      if (fluid) {
+        patch.fluid = fluid;
+        fluidCount++;
+      }
+      if (patch.flow || patch.fluid) {
+        next[iso] = patch;
+        imported++;
+      }
+    });
+    return { next, imported, flowCount, fluidCount, skipped };
+  };
+
+  const summarizeImport = ({ imported, flowCount, fluidCount, skipped }) =>
+    `Imported ${imported} day${imported === 1 ? "" : "s"} (${flowCount} with flow, ${fluidCount} with mucus data)` +
+    (skipped ? `, skipped ${skipped} row${skipped === 1 ? "" : "s"} with an unrecognized date.` : ".");
+
+  const handleFileSelected = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file later
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const parsed = Papa.parse(String(reader.result), { header: true, skipEmptyLines: true });
+      const headers = parsed.meta?.fields || [];
+      if (headers.length === 0 || parsed.data.length === 0) {
+        setImportMessage("Couldn't find any rows in that file — check it's the CSV export from Kindara.");
+        return;
+      }
+      if (looksLikeNativeKindaraExport(headers)) {
+        // matches Kindara's real export shape — safe to import directly, no manual mapping needed
+        const result = mergeImportedRows(entries, parsed.data, "date", parseNativeKindaraRow);
+        persist(result.next, entries);
+        setEntries(result.next);
+        setImportPreview(null);
+        setImportMessage(summarizeImport(result));
+        return;
+      }
+      // unrecognized shape — fall back to guessing a single date/flow/mucus column
+      setImportMessage(null);
+      setImportPreview({
+        headers,
+        rows: parsed.data,
+        dateCol: guessColumn(headers, ["date"]),
+        flowCol: guessColumn(headers, ["flow", "bleed", "period", "menstrual"]),
+        fluidCol: guessColumn(headers, ["mucus", "fluid", "discharge", "cervical", "cm"]),
+      });
+    };
+    reader.readAsText(file);
+  };
+
+  const handleConfirmImport = () => {
+    if (!importPreview) return;
+    const { rows, dateCol, flowCol, fluidCol } = importPreview;
+    const result = mergeImportedRows(entries, rows, dateCol, (row) => ({
+      flow: flowCol ? parseFlowValue(row[flowCol]) : null,
+      fluid: fluidCol ? parseFluidValue(row[fluidCol]) : null,
+    }));
+    persist(result.next, entries);
+    setEntries(result.next);
+    setImportPreview(null);
+    setImportMessage(summarizeImport(result));
+  };
+
+  if (session === undefined) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: COLORS.bg,
+          color: COLORS.textMuted,
+          fontFamily: "var(--sans)",
+        }}
+      >
+        <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');`}</style>
+        Loading…
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: COLORS.bg,
+          padding: 20,
+        }}
+      >
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+          @font-face {
+            font-family: 'Fontdiner Swanky';
+            src: url(data:font/woff2;base64,${FONTDINER_SWANKY_WOFF2}) format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+          }
+          * { box-sizing: border-box; }
+        `}</style>
+        <form
+          onSubmit={authMode === "login" ? handleLogin : handleSignup}
+          style={{ ...cardStyle, width: "100%", maxWidth: 340, fontFamily: "var(--sans)" }}
+        >
+          <div
+            style={{
+              fontFamily: "'Fontdiner Swanky', cursive",
+              fontSize: 36,
+              color: "#4B2E5A",
+              marginBottom: 18,
+              textAlign: "center",
+            }}
+          >
+            Luna
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <input
+              type="email"
+              required
+              placeholder="Email"
+              value={authEmail}
+              onChange={(e) => setAuthEmail(e.target.value)}
+              style={selectStyle}
+            />
+            <input
+              type="password"
+              required
+              minLength={6}
+              placeholder="Password"
+              value={authPassword}
+              onChange={(e) => setAuthPassword(e.target.value)}
+              style={selectStyle}
+            />
+          </div>
+          {authError && <div style={{ color: COLORS.periodStrong, fontSize: 12.5, marginTop: 10 }}>{authError}</div>}
+          <button
+            type="submit"
+            disabled={authLoading}
+            style={{ ...pillStyle(true), width: "100%", justifyContent: "center", marginTop: 16, opacity: authLoading ? 0.6 : 1 }}
+          >
+            {authLoading ? "Please wait…" : authMode === "login" ? "Log in" : "Create account"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setAuthMode((m) => (m === "login" ? "signup" : "login"));
+              setAuthError(null);
+            }}
+            style={{ ...demoLinkStyle, display: "block", margin: "14px auto 0" }}
+          >
+            {authMode === "login" ? "New here? Create an account" : "Already have an account? Log in"}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        "--serif": "'Fraunces', ui-serif, Georgia, serif",
+        "--sans": "'Inter', ui-sans-serif, system-ui, sans-serif",
+        background: COLORS.bg,
+        minHeight: "100%",
+        fontFamily: "var(--sans)",
+        color: COLORS.text,
+        padding: "28px 20px 60px",
+      }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap');
+        @font-face {
+          font-family: 'Fontdiner Swanky';
+          src: url(data:font/woff2;base64,${FONTDINER_SWANKY_WOFF2}) format('woff2');
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+        * { box-sizing: border-box; }
+        button { font-family: inherit; }
+        button:focus-visible { outline: 2px solid ${COLORS.wine}; outline-offset: 2px; }
+      `}</style>
+
+      <div style={{ maxWidth: 620, margin: "0 auto" }}>
+        <div style={{ marginBottom: 22 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <span style={{ fontFamily: "'Fontdiner Swanky', cursive", fontSize: 40, lineHeight: 1, color: "#4B2E5A" }}>
+              Luna
+            </span>
+            <button onClick={handleSignOut} style={{ ...demoLinkStyle, marginTop: 8 }}>
+              Sign out
+            </button>
+          </div>
+          <div style={{ fontSize: 13.5, color: COLORS.textMuted, marginTop: 2 }}>
+            Signed in as {session.user.email} — your own record of flow and fertility signs.
+          </div>
+          {/* TEMPORARY: remove this row once real tracking has started */}
+          <div style={{ display: "flex", gap: 14, marginTop: 10, flexWrap: "wrap" }}>
+            <button onClick={handleLoadDemo} style={demoLinkStyle}>
+              Load example months
+            </button>
+            <button onClick={handleClearAll} style={demoLinkStyle}>
+              Clear all data
+            </button>
+          </div>
+
+          <div style={{ marginTop: 12 }}>
+            <button onClick={() => fileInputRef.current?.click()} style={pillStyle(false)}>
+              Import from Kindara (CSV)
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv,text/csv"
+              onChange={handleFileSelected}
+              style={{ display: "none" }}
+            />
+          </div>
+
+          {importMessage && !importPreview && (
+            <div style={{ marginTop: 10, fontSize: 12.5, color: COLORS.textMuted }}>{importMessage}</div>
+          )}
+
+          {importPreview && (
+            <div style={{ ...cardStyle, marginTop: 14 }}>
+              <div style={{ fontFamily: "var(--serif)", fontSize: 16, color: COLORS.text, marginBottom: 8 }}>
+                Check the column mapping
+              </div>
+              <div style={{ fontSize: 12.5, color: COLORS.textMuted, marginBottom: 16 }}>
+                Found {importPreview.rows.length} rows. I've guessed which columns hold what — Kindara's exact export
+                format isn't something I can verify, so worth a quick check before importing.
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <div style={labelStyle}>Date column</div>
+                  <select
+                    value={importPreview.dateCol}
+                    onChange={(e) => setImportPreview((p) => ({ ...p, dateCol: e.target.value }))}
+                    style={selectStyle}
+                  >
+                    <option value="">— choose —</option>
+                    {importPreview.headers.map((h) => (
+                      <option key={h} value={h}>
+                        {h}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <div style={labelStyle}>Flow / bleeding column</div>
+                  <select
+                    value={importPreview.flowCol}
+                    onChange={(e) => setImportPreview((p) => ({ ...p, flowCol: e.target.value }))}
+                    style={selectStyle}
+                  >
+                    <option value="">None</option>
+                    {importPreview.headers.map((h) => (
+                      <option key={h} value={h}>
+                        {h}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <div style={labelStyle}>Mucus / fluid column</div>
+                  <select
+                    value={importPreview.fluidCol}
+                    onChange={(e) => setImportPreview((p) => ({ ...p, fluidCol: e.target.value }))}
+                    style={selectStyle}
+                  >
+                    <option value="">None</option>
+                    {importPreview.headers.map((h) => (
+                      <option key={h} value={h}>
+                        {h}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 10, marginTop: 18 }}>
+                <button
+                  onClick={handleConfirmImport}
+                  disabled={!importPreview.dateCol}
+                  style={{ ...pillStyle(true), opacity: importPreview.dateCol ? 1 : 0.5 }}
+                >
+                  Import
+                </button>
+                <button onClick={() => setImportPreview(null)} style={pillStyle(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {loading ? (
+          <div style={{ color: COLORS.textMuted, fontSize: 14 }}>Loading…</div>
+        ) : (
+          <>
+            <SummaryCard cycleData={cycleData} />
+
+            {error && (
+              <div style={{ marginTop: 10, fontSize: 12.5, color: COLORS.wine }}>{error}</div>
+            )}
+
+            <div style={{ display: "flex", gap: 22, marginTop: 26, marginBottom: 18, borderBottom: `1px solid ${COLORS.border}` }}>
+              {["calendar", "chart", "history"].map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: "0 0 10px 0",
+                    fontSize: 14.5,
+                    cursor: "pointer",
+                    color: view === v ? COLORS.text : COLORS.textMuted,
+                    borderBottom: view === v ? `2px solid ${COLORS.wine}` : "2px solid transparent",
+                    marginBottom: -1,
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
+
+            {view === "calendar" && <CalendarView entries={entries} onChange={handleChange} cycleData={cycleData} />}
+            {view === "chart" && <ChartView entries={entries} cycleData={cycleData} />}
+            {view === "history" && <HistoryView cycleData={cycleData} />}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+</script>
+</body>
+</html>
